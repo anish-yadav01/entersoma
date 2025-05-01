@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOMA | Find your flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F2E6C2;
+            --white: #FFFFFF;
+            --off-white: #F9F9F9;
+            --dark: #121212;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            transition: background-color 0.3s;
+        }
+        
+        header.scrolled {
+            background-color: rgba(18, 18, 18, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--gold);
+            letter-spacing: 5px;
+        }
+        
+        .hero h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: var(--white);
+            letter-spacing: 3px;
+        }
+        
+        .coming-soon {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            color: var(--gold-light);
+            margin-top: 40px;
+            text-transform: uppercase;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.2);
+            transition: all 0.3s;
+            z-index: -1;
+        }
+        
+        .cta-button:hover {
+            color: var(--white);
+            border-color: var(--gold);
+        }
+        
+        .cta-button:hover::before {
+            left: 0;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-5px) translateX(-50%);
+            }
+        }
+        
+        .about {
+            padding: 120px 5%;
+            background-color: var(--off-white);
+            color: var(--dark);
+        }
+        
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+            padding-right: 40px;
+        }
+        
+        .about-text h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .about-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: var(--gold);
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .about-image img {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ingredients {
+            padding: 120px 5%;
+            background-color: var(--dark);
+        }
+        
+        .ingredients-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .ingredients h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--gold);
+        }
+        
+        .ingredient-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .ingredient-item {
+            width: 250px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .ingredient-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+        
+        .ingredient-icon {
+            font-size: 40px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .ingredient-item h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+        
+        .ingredient-item p {
+            font-size: 14px;
+            color: var(--white);
+            opacity: 0.8;
+        }
+        
+        .parallax {
+            height: 400px;
+            background: linear-gradient(rgba(18, 18, 18, 0.5), rgba(18, 18, 18, 0.5)), url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80') no-repeat fixed center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .parallax-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .parallax-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        
+        .parallax-content p {
+            font-size: 1.2rem;
+            color: var(--white);
+            margin-bottom: 30px;
+        }
+        
+        .subscribe {
+            padding: 120px 5%;
+            background-color: var(--off-white);
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .subscribe-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .subscribe h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .subscribe p {
+            margin-bottom: 40px;
+        }
+        
+        .email-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .email-input {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+        }
+        
+        .subscribe-button {
+            padding: 15px 25px;
+            background-color: var(--dark);
+            color: var(--gold);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subscribe-button:hover {
+            background-color: var(--gold);
+            color: var(--dark);
+        }
+        
+        footer {
+            padding: 50px 5% 30px;
+            background-color: var(--dark);
+            color: var(--white);
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-logo a {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: var(--gold);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+        
+        .footer-nav {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-nav h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        
+        .footer-nav ul {
+            list-style: none;
+        }
+        
+        .footer-nav li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .footer-nav a:hover {
+            color: var(--gold);
+        }
+        
+        .footer-social {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-social h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        
+        .social-links {
+            display: flex;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--gold);
+            color: var(--dark);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        @media screen and (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.4rem;
+            }
+            
+            .about-text, .about-image {
+                padding: 0;
+                margin-bottom: 40px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .ingredient-list {
+                gap: 15px;
+            }
+            
+            .ingredient-item {
+                width: calc(50% - 15px);
+            }
+            
+            .email-form {
+                flex-direction: column;
+            }
+            
+            .email-input, .subscribe-button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Loader animation */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+        
+        .loader:before, .loader:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--gold);
+        }
+        
+        .loader:before {
+            width: 70px;
+            height: 70px;
+            border-width: 2px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loader:after {
+            width: 50px;
+            height: 50px;
+            border-width: 2px;
+            animation: spin 0.5s linear infinite reverse;
+        }
+        
+        /* Ancient Indian patterns and motifs */
+        .mandala-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='60' cy='60' r='50' stroke='%23D4AF37' stroke-width='0.5' fill='none' stroke-opacity='0.1'/%3E%3Ccircle cx='60' cy='60' r='40' stroke='%23D4AF37' stroke-width='0.5' fill='none' stroke-opacity='0.1'/%3E%3Ccircle cx='60' cy='60' r='30' stroke='%23D4AF37' stroke-width='0.5' fill='none' stroke-opacity='0.1'/%3E%3Cpath d='M60 10L60 110M10 60L110 60M25 25L95 95M25 95L95 25' stroke='%23D4AF37' stroke-width='0.3' stroke-opacity='0.1'/%3E%3C/svg%3E");
+            background-size: 120px 120px;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        
+        /* Minimalist design */
+        .container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background-color: var(--gold);
+            opacity: 0.05;
+            border-radius: 50%;
+        }
+        
+        /* Lotus symbol */
+        .lotus {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 100px;
+            height: 100px;
+            opacity: 0.2;
+        }
+        
+        .lotus svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--gold);
+        }
+
+        /* Geometric patterns */
+        .geometric-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50L0 0h100v100z' fill='%23D4AF37'/%3E%3C/svg%3E");
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Header -->
+    <header>
+        <a href="#" class="logo">SOMA</a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#ingredients">Ingredients</a></li>
+            <li><a href="#subscribe">Subscribe</a></li>
+        </ul>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="floating-elements">
+            
+            <div class="mandala-pattern"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hidden">SOMA</h1>
+            <h2 class="hidden">FIND YOUR FLOW</h2>
+            <p class="coming-soon hidden">Coming Soon</p>
+            <div class="hidden" style="margin-top: 40px;">
+                <a href="#subscribe" class="cta-button">Stay Updated</a>
+            </div>
+            <div class="hidden" style="margin-top: 60px; opacity: 0.6;">
+                <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="48" stroke="#D4AF37" stroke-width="1" fill="none"/>
+                    <circle cx="50" cy="50" r="40" stroke="#D4AF37" stroke-width="1" fill="none"/>
+                    <path d="M50 10L50 90M10 50L90 50M20 20L80 80M20 80L80 20" stroke="#D4AF37" stroke-width="1" stroke-opacity="0.8"/>
+                    <path d="M50 20C30 35 30 65 50 80C70 65 70 35 50 20Z" fill="none" stroke="#D4AF37" stroke-width="1" stroke-opacity="0.8"/>
+                </svg>
+            </div>
+        </div>
+        <div class="scroll-down">SCROLL DOWN</div>
+    </section>
+    
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-container" style="position: relative;">
+            
+            <div class="about-text hidden" style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h2>Ancient Wisdom Meets Modern Science</h2>
+                <p>Inspired by the Vedic idea of Soma Rasa, a sacred drink described in early Hindu texts as a bridge between the human and the divine. Our product draws inspiration from this framework, channeling its core idea: that what we consume can help align mind, body, and spirit.</p>
+                <p>It is formulated to support presence and cognitive clarity.</p>
+                <div style="margin-top: 40px;">
+                    <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="opacity: 0.3;">
+                        <path d="M50 0 C50 0 20 25 20 40 C20 55 35 60 50 60 C65 60 80 55 80 40 C80 25 50 0 50 0 Z" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M50 60 C35 60 20 65 20 80 C20 95 50 100 50 100 C50 100 80 95 80 80 C80 65 65 60 50 60 Z" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                        <circle cx="50" cy="40" r="5" fill="#D4AF37" fill-opacity="0.5"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Ingredients Section -->
+    <section class="ingredients" id="ingredients">
+        <div class="ingredients-container">
+            <h2 class="hidden">Crafted with Purpose</h2>
+            <div class="ingredient-list">
+                <div class="ingredient-item hidden">
+                    <div class="ingredient-icon">✧</div>
+                    <h3>L-Theanine</h3>
+                    <p>Promotes relaxation without drowsiness, helping to reduce stress while maintaining alertness.</p>
+                </div>
+                <div class="ingredient-item hidden">
+                    <div class="ingredient-icon">✧</div>
+                    <h3>Green Tea Extract</h3>
+                    <p>Natural source of caffeine that provides clean, sustained energy without the jitters.</p>
+                </div>
+                <div class="ingredient-item hidden">
+                    <div class="ingredient-icon">✧</div>
+                    <h3>Brahmi</h3>
+                    <p>Ancient herb known for supporting cognitive function and mental clarity.</p>
+                </div>
+                <div class="ingredient-item hidden">
+                    <div class="ingredient-icon">✧</div>
+                    <h3>Magnesium</h3>
+                    <p>Essential mineral that supports nervous system function and helps maintain focus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Parallax Section -->
+    <section class="parallax" style="background: linear-gradient(rgba(18, 18, 18, 0.5), rgba(18, 18, 18, 0.5)), url('https://images.unsplash.com/photo-1587614387466-0a72ca909e16?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80') no-repeat fixed center center; background-size: cover;">
+        <div class="parallax-content">
+            <h2 class="hidden">Elevating Human Consciousness</h2>
+            <a href="#subscribe" class="cta-button hidden">Join the Movement</a>
+        </div>
+    </section>
+    
+    <!-- Subscribe Section -->
+    <section class="subscribe" id="subscribe">
+        <div class="subscribe-container">
+            <h2 class="hidden">Be the First to Know</h2>
+            <p class="hidden">Sign up to receive updates about SOMA's launch, special offers, and more.</p>
+            <form class="email-form hidden">
+                <input type="email" placeholder="Your email address" class="email-input" required>
+                <button type="submit" class="subscribe-button">Subscribe</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <a href="#">SOMA</a>
+                <p style="margin-top: 20px; font-size: 14px; opacity: 0.7;">A modern ritual for tuning in.</p>
+            </div>
+            <div class="footer-nav">
+                <h3>Navigate</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#ingredients">Ingredients</a></li>
+                    <li><a href="#subscribe">Subscribe</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="copyright">
+            © 2025 SOMA. All rights reserved. | <a href="#" style="color: inherit;">Privacy Policy</a> | <a href="#" style="color: inherit;">Terms of Service</a>
+        </div>
+    </footer>
+    
+    <script>
+        // Loader Animation
+        window.addEventListener('load', function() {
+            const loader = document.querySelector('.loader-container');
+            setTimeout(function() {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                
+                // Animate hero content after loader is gone
+                setTimeout(function() {
+                    const hiddenElements = document.querySelectorAll('.hidden');
+                    hiddenElements.forEach(function(element, index) {
+                        setTimeout(function() {
+                            element.classList.add('visible');
+                        }, index * 200);
+                    });
+                }, 500);
+            }, 1500);
+        });
+        
+        // Scroll animations
+        window.addEventListener('scroll', function() {
+            const hiddenElements = document.querySelectorAll('.hidden:not(.visible)');
+            hiddenElements.forEach(function(element) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementPosition < windowHeight - 100) {
+                    element.classList.add('visible');
+                }
+            });
+            
+            // Header background on scroll
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Create floating elements
+        function createFloatingElements() {
+            const floatingElements = document.querySelector('.floating-elements');
+            
+            for (let i = 0; i < 10; i++) {
+                const size = Math.random() * 100 + 50;
+                const element = document.createElement('div');
+                element.classList.add('floating-element');
+                element.style.width = size + 'px';
+                element.style.height = size + 'px';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                
+                floatingElements.appendChild(element);
+            }
+        }
+        
+        // Form submission handling (placeholder)
+        const form = document.querySelector('.email-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('.email-input').value;
+                if (email) {
+                    alert('Thank you for subscribing! We will keep you updated about SOMA.');
+                    this.reset();
+                }
+            });
+        }
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            createFloatingElements();
+        });
+    </script>
+</body>
+</html>
